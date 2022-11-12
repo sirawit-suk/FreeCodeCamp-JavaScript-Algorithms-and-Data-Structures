@@ -19,7 +19,7 @@ Window.prototype.tabOpen = function (tab) {
 Window.prototype.tabClose = function (index) {
   // Only change code below this line
 
-  // NOTE:
+  // NOTE: slice & splice
   // slice : get new array
   // splice : modify original array
 
