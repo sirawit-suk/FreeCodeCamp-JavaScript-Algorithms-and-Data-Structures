@@ -22,17 +22,14 @@ function round2Decimal(num) {
 
 function checkCashRegister(price, cash, cidArray) {
   // change cid 2d array to object (easy to coding)
-  const cid = {};
-  for (let arr of cidArray) {
-    cid[arr[0]] = arr[1];
-  }
+  const cid = Object.fromEntries(cidArray);
 
   let change = cash - price;
   const result = {};
   if (change < 0) {
     // NOT ENOUGH MONEY TO PAY CASE :/
   } else {
-    result.change = [];
+    result.change = {};
     // find able currency to change
     const ableChanges = Object.keys(CURRENTCY).filter(
       (key) => CURRENTCY[key] <= change
@@ -51,12 +48,11 @@ function checkCashRegister(price, cash, cidArray) {
         change = round2Decimal(change);
 
         // add to result.change
-        if (result.change.some((arr) => arr[0] === currency)) {
-          let currencyArr = result.change.find((arr) => arr[0] === currency);
-          currencyArr[1] += CURRENTCY[currency];
-          currencyArr[1] = round2Decimal(currencyArr[1]);
+        if (result.change[currency]) {
+          result.change[currency] += CURRENTCY[currency];
+          result.change[currency] = round2Decimal(result.change[currency]);
         } else {
-          result.change.push([currency, round2Decimal(CURRENTCY[currency])]);
+          result.change[currency] = round2Decimal(CURRENTCY[currency]);
         }
       }
     }
@@ -67,6 +63,8 @@ function checkCashRegister(price, cash, cidArray) {
         result.change = cidArray;
         result.status = STATUS.CLOSED;
       } else {
+        // change result.change to 2d array
+        result.change = Object.entries(result.change);
         result.status = STATUS.OPEN;
       }
     } else if (change > 0) {
